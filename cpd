@@ -5,20 +5,38 @@
 #
 # Author: Manuel López Mateos, under GPL-3.0 License
 #	  https://manuel.lopez-mateos.net
+#   few changes by: Dimas Gomez dimasgomez__at__g_mail_
 # 
-# Last change: Jun 20, 2023, 21:16. Delete colon and add h after Hour, m after Minutes and s after Seconds
+# Last change: 
+# Jul 28, 2024 new version, with few modifications
+#               This version renames every file from folder, starting with the date, 
+#                so the files get organized by date.
+#               I add an if argument, accepting a provided date as argument 
+#              (sometimes, I rename older files)
+#              *rendate 20240725*
+#               will rename every file **in current folder**, adding date as prefix.
+# Jun 20, 2023, 21:16. Delete colon and add h after Hour, m after Minutes and s after Seconds
 #              (some servers don't allow upload files with colon in file name)
 # Jun 20, 2023. Add colon after Hour and Minutes
 # Sep 24, 2020
 # ------------------------------------------------------------
 
-now=$(date +"%b%d-%Y-%Hh%Mm%Ss")
+# Verificar se uma data foi fornecida como argumento
+if [ -n "$1" ]; then
+    now=$1
+else
+    now=$(date +"%Y%m%d")
+fi
 
-FILE="$1"
+# Each file in current directory
+for FILE in *; do
+    # Ignorar diretórios
+    if [ -f "$FILE" ]; then
+        # Extrair o nome e a extensão do arquivo
+        name="${FILE%.*}"
+        ext="${FILE##*.}"
 
-
-name="${FILE%.*}"
-ext="${FILE##*.}"
-
-cp -v $FILE $name-$now.$ext
-
+        # Renomear o arquivo com a data fornecida ou a data atual
+        mv -v "$FILE" "${now}_${name}.$ext"
+    fi
+done
